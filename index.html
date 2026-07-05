@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<title>AVANKIMED: sistema integral</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f4f7fa;
+    }
+
+header{
+    background:#1565C0;
+    color:white;
+    padding:20px;
+    text-align:center;
+    font-size:40px;
+    font-weight:bold;
+    }
+
+.menu{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    margin-top:80px;
+    }
+
+button{
+    width:240px;
+    height:120px;
+    
+    font-size:28px;
+    border:none;
+    border-radius:15px;
+    
+    cursor:pointer;
+    color:white;
+    transition:.3s;
+    }
+
+button:hover{
+    transform:scale(1.05);
+    }
+
+#btnAgenda{
+    background:#2E7D32;
+    }
+
+#btnAsistencia{
+    background:#EF6C00;
+    }
+
+#btnEstadistica{
+    background:#6A1B9A;
+    }
+
+#contenido{
+    margin-top:60px;
+    text-align:center;
+    font-size:28px;
+    }
+
+footer{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    
+    text-align:center;
+    padding:10px;
+    font-size:12px;
+    border-top:1px solid gray;
+    background:white;
+    }
+
+.modal{
+  
+  display:none;
+  
+  position:fixed;
+  
+  left:0;
+  top:0;
+  
+  width:100%;
+  height:100%;
+  
+  background:rgba(0,0,0,.5);
+  
+  z-index:999;
+  
+  }
+  
+.modalContenido{
+  
+  background:aqua;
+  
+  width:500px;
+  
+  margin:80px auto;
+  
+  padding:25px;
+  
+  border-radius:12px;
+  
+  box-shadow:0 0 20px yellow;
+  
+  }
+  
+.cerrar{
+  
+  float:right;
+  
+  font-size:30px;
+  
+  cursor:pointer;
+  
+  font-weight:bold;
+
+  }
+
+
+.modalContenidoMensaje{
+
+    background:white;
+
+    width:420px;
+
+    margin:180px auto;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:0px 0px 20px gray;
+
+}
+
+#tituloMensaje{
+
+    color:#C62828;
+
+    font-size:30px;
+
+}
+
+#textoMensaje{
+
+    font-size:20px;
+
+}
+
+.modalContenidoMensaje button{
+
+    background:#1565C0;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 40px;
+
+    border-radius:8px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}  
+
+  
+  
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+AVANKIMED
+
+</header>
+
+<div class="menu">
+
+    <button id="btnAgenda">
+    AGENDAMIENTO
+    </button>
+    
+    <button id="btnAsistencia">
+    ASISTENCIA
+    </button>
+    
+    <button id="btnEstadistica">
+    ESTADÍSTICA
+    </button>
+
+</div>
+
+  
+<div id="contenido">
+    Seleccione una opción
+</div>
+
+  
+<div id="modalAgenda" class="modal">
+
+    <div class="modalContenido">
+
+        <span class="cerrar" onclick="cerrarAgenda()">&times;</span>
+
+        <h2>Nuevo Agendamiento</h2>
+
+        <table> 
+
+            <tr>
+                <td>ID Paciente</td>
+                <td>
+                    <input id="idPaciente" readonly style="border-radius:6px; width:70px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Fecha Cita</td>
+                <td>
+                    <input type="date" id="fechaCita" style="border-radius:6px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Hora Cita</td>
+                <td>
+                    <input type="time" id="horaCita" style="border-radius:6px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Nombre</td>
+                <td>
+                    <input id="nombrePaciente" oninput="this.value=this.value.toUpperCase()" style="border-radius:6px; width:200px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Celular</td>
+                <td>
+                    <input id="celular" style="border-radius:6px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Correo</td>
+                <td>
+                    <input id="correo" oninput="this.value=this.value.toUpperCase()" style="border-radius:6px;">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Diagnóstico</td>
+                <td>
+                    <textarea id="diagnostico" oninput="this.value=this.value.toUpperCase()" style="border-radius:6px; width:200px;"></textarea>
+                </td>
+            </tr>
+
+        </table>
+
+        <br>
+
+        <button onclick="guardarPaciente()" 
+                style="color:white; background:blue; font-size:24px; 
+                        width:150px; height:45px; font-weight:bold;">
+            GUARDAR
+        </button>
+
+        <div id="mensaje"></div>
+
+    </div>
+
+</div>
+
+<!-- MODAL MENSAJES -->
+
+<div id="modalMensaje" class="modal">
+
+    <div class="modalContenidoMensaje">
+
+        <h2 id="tituloMensaje"></h2>
+
+        <p id="textoMensaje"></p>
+
+        <br>
+
+        <button onclick="cerrarMensaje()" 
+                style="font-size:24px; text-align:center; color:white; background:navy; border-radius:8px; 
+                        width:180px; height:60px; font-weight:bold;">
+
+            ACEPTAR
+
+        </button>
+
+    </div>
+
+</div>
+  
+  
+<footer>
+    
+    <hr>  
+    Derechos autor | prof. JOSÉ VEGA (2026)
+
+</footer>
+
+  
+<!-- script src="script.js"></script-->
+
+<script>
+
+const URL="https://script.google.com/macros/s/AKfycbwX_zZ6xP96witYhLdiljCclZlTrjjKPwtf0TtzJZd92lS06fg8BnWvkjt4jEHjDyyc/exec";
+
+let campoPendiente="";
+  
+document
+.getElementById("btnAgenda")
+.addEventListener("click",agendamiento);
+
+document
+.getElementById("btnAsistencia")
+.addEventListener("click",asistencia);
+
+document
+.getElementById("btnEstadistica")
+.addEventListener("click",estadistica);
+
+  
+
+function agendamiento(){
+
+document.getElementById("modalAgenda").style.display="block";
+
+limpiarFormulario();
+
+obtenerNuevoID();
+
+}
+
+  
+function guardarPaciente(){
+
+      const fecha=document.getElementById("fechaCita").value;
+      
+      const hora=document.getElementById("horaCita").value;
+      
+      const nombre=document
+      .getElementById("nombrePaciente")
+      .value
+      .trim();
+      
+      /*if(fecha==""){
+      
+          alert("❎ Debe seleccionar FECHA DE CITA");
+      
+          document.getElementById("fechaCita").focus();
+      
+          return;
+      
+      }*/
+
+      if(fecha==""){
+      
+      mostrarMensaje(
+      
+      "⚠️ ATENCIÓN",
+      
+      "Debe seleccionar FECHA DE CITA",
+      
+      "fechaCita"
+      
+      );
+      
+      return;
+      
+      }
+  
+
+      if(hora==""){
+      
+      mostrarMensaje(
+      
+      "⚠️ ATENCIÓN",
+      
+      "Debe seleccionar HORA DE CITA",
+      
+      "horaCita"
+      
+      );
+      
+      return;
+      
+      }
+
+
+  
+      if(nombre==""){
+      
+      mostrarMensaje(
+      
+      "⚠️ ATENCIÓN",
+      
+      "Debe ingresar NOMBRE DEL PACIENTE",
+      
+      "nombrePaciente"
+      
+      );
+      
+      return;
+      
+      }
+
+  
+      const datos={
+      
+      id:document.getElementById("idPaciente").value,
+      
+      fechaCita:fecha,
+      
+      hora:hora,
+      
+      nombre:nombre.toUpperCase(),
+      
+      celular:document.getElementById("celular").value,
+      
+      correo:document.getElementById("correo").value.toUpperCase(),
+      
+      diagnostico:document.getElementById("diagnostico").value.toUpperCase()
+      
+      };
+
+      
+      fetch(URL,{
+      
+      method:"POST",
+      
+      body:JSON.stringify(datos)
+      
+      })
+      
+      .then(r=>r.text())
+      
+
+
+    .then(()=>{
+    
+    document.getElementById("mensaje").innerHTML=
+    "<h2 style='color:green'>😎 Paciente registrado correctamente ✔</h2>";
+    
+    setTimeout(()=>{
+    
+    cerrarAgenda();
+    
+    limpiarFormulario();
+    
+    document.getElementById("mensaje").innerHTML="";
+    
+    },1000);
+    
+    });
+
+  
+}  
+
+
+function limpiarFormulario(){
+
+      document.getElementById("fechaCita").value="";
+      
+      document.getElementById("horaCita").value="";
+      
+      document.getElementById("nombrePaciente").value="";
+      
+      document.getElementById("celular").value="";
+      
+      document.getElementById("correo").value="";
+      
+      document.getElementById("diagnostico").value="";
+      
+      // Colocar el cursor en el primer campo
+      document.getElementById("fechaCita").focus();
+
+}
+
+  
+function asistencia(){
+      
+      document.getElementById("contenido").innerHTML=
+      "<h2>Módulo de Asistencia</h2>";
+
+}
+
+  
+function estadistica(){
+    
+    document.getElementById("contenido").innerHTML=
+    "<h2>Módulo Estadística</h2>";
+
+}
+
+function obtenerNuevoID(){
+
+      fetch(URL+"?accion=nuevoID")
+      
+      .then(r=>r.text())
+      
+      .then(id=>{
+      
+      document.getElementById("idPaciente").value=id;
+      
+      });
+
+}
+
+  
+function cerrarAgenda(){
+
+      document.getElementById("modalAgenda").style.display="none";
+}  
+
+
+function mostrarMensaje(titulo,texto,campo){
+  
+      campoPendiente=campo;
+      
+      document.getElementById("tituloMensaje").innerHTML=titulo;
+      
+      document.getElementById("textoMensaje").innerHTML=texto;
+      
+      document.getElementById("modalMensaje").style.display="block";
+
+}
+
+function cerrarMensaje(){
+
+      document.getElementById("modalMensaje").style.display="none";
+      
+      if(campoPendiente!=""){
+      
+      document.getElementById(campoPendiente).focus();
+      
+    }
+
+}  
+
+  
+</script>    
+
+
+  
+</body>
+</html>
